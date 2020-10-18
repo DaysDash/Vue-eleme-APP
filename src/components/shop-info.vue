@@ -1,0 +1,102 @@
+<template>
+  <div id="container" @click="$router.push(`/shop/${shop.id}`)">
+    <div class="img">
+      <img :src="shop.img" />
+    </div>
+    <div class="info">
+      <div class="shopName">{{ shop.name }}</div>
+      <div class="second-line">
+        <div class="shop-rate">
+          <span>{{ shop.rate }}分</span>
+          月售{{ shop.sales }}
+        </div>
+        <div class="shop-distance">
+          {{ averageTime }}分钟
+          {{ shop.distance }}
+        </div>
+      </div>
+      <div class="third-line">
+        起送&yen;{{ shop.minPrice }} 配送&yen;{{ shop.deliverFee }}
+      </div>
+      <div class="fouth-line">
+        <span>{{ shop.evalution }}</span>
+      </div>
+      <div class="discount">
+        <span>{{ shop.discount }}</span>
+      </div>
+    </div>
+  </div>
+</template>
+<script>
+export default {
+  props: {
+    shop: {
+      type: Object
+    }
+  },
+  computed: {
+    // 不知道距离和时间的具体算法,随便写了一个
+    averageTime() {
+      return parseInt(this.shop.distance) / 0.2 > 20
+        ? parseInt(this.shop.distance) / 0.2
+        : 20;
+    }
+  }
+};
+</script>
+<style lang="stylus" scoped>
+#container
+  display flex
+  box-shadow 1px -1px 10px rgba(0, 0, 0, .1), -1px 1px 10px rgba(0, 0, 0, .2)
+  margin .8em .5em
+  border-radius 10px
+  padding 1em
+  .img
+    width 6rem
+    margin-right 10px
+    img
+      width 6rem
+      height auto
+      border-radius 5px
+  .info
+    flex 1 1 auto
+    div
+      height 1.5rem
+      line-height 1.5rem
+    .shopName
+      font-size 1.2rem
+      font-weight bold
+    .second-line
+      font-size .8rem
+      display flex
+      flex-direction row
+      justify-content space-between
+      color grey
+      .shop-rate
+        span
+          color red
+    .third-line
+      font-size .8rem
+      color grey
+    .fouth-line
+      span
+        font-size .8rem
+        background-color rgba(255,85,0,.1)
+        padding .0 1rem
+        color rgb(255,85,0)
+        border-radius 3px
+        &::before
+          content '"'
+        &::after
+          content '" '
+    .discount
+      margin-bottom 0
+      span
+        border 1px solid red
+        border-radius 3px
+        padding 2px
+        font-size .8rem
+        height 1.5rem
+        line-height 1.5rem
+        color red
+</style>
