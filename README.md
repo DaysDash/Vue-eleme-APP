@@ -1,5 +1,5 @@
 # shop
-
+这是一个简单通过Vue实现的外卖项目
 ## Project setup
 ```
 npm install
