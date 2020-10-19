@@ -1,5 +1,4 @@
 # shop
-
 ## Project setup
 ```
 npm install

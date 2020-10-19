@@ -84,14 +84,15 @@ export default {
           },
           foods: [
             {
-              img:
+              icon:
                 "http://fuss10.elemecdn.com/8/a6/453f65f16b1391942af11511b7a90jpeg.jpeg?imageView2/1/w/114/h/114",
               name: "南瓜粥",
               price: 9,
               num: 1
             }
           ],
-          state: "complete"
+          state: "complete",
+          totalPrice: 9
         }
       ]
     };

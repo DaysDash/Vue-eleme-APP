@@ -2,7 +2,7 @@
   <div class="mine">
     <header>
       <div class="user-icon">
-        <img src="../assets/defaultAvatar.jpg" />
+        <img src="@/assets/defaultAvatar.jpg" />
       </div>
       <div class="user-info">
         {{ user.name }}

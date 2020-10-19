@@ -24,12 +24,12 @@
       <div class="swiper-wrapper">
         <div class="swiper-slide otherPage">
           <div v-for="n in 8" :key="n">
-            <img src="../assets/loading.png" />
+            <img src="@/assets/loading.png" />
           </div>
         </div>
         <div class="swiper-slide">
           <div v-for="n in 8" :key="n">
-            <img src="../assets/loading.png" />
+            <img src="@/assets/loading.png" />
           </div>
         </div>
       </div>
@@ -39,10 +39,16 @@
     <div class="shopList">
       <div class="sort">
         <div>综合排序</div>
-        <div>全部分类</div>
+        <div style="margin-left: 5px">距离排序</div>
       </div>
-      <shopInfo v-for="item in shoplist" :shop="item" :key="item.id"></shopInfo>
-      <div class="ph"></div>
+      <template v-if="shopList">
+        <shopInfo
+          v-for="item in shopList"
+          :shop="item"
+          :key="item.id"
+        ></shopInfo>
+      </template>
+      <div id="sentinel"></div>
     </div>
   </div>
 </template>
@@ -85,8 +91,8 @@ header
     position sticky
     top 3em
     background-color #fff
-  .ph
-    height calc(2em + 3vw)
+  #sentinel
+    height 2.5rem
 </style>
 
 <script>
@@ -103,75 +109,19 @@ export default {
   name: "Home",
   data() {
     return {
-      shoplist: [
-        {
-          id: 1,
-          name: "示例1",
-          img: "http://lorempixel.com/90/90/food/1",
-          sales: 200,
-          distance: "10km",
-          minPrice: 30,
-          deliverFee: 6,
-          rate: 1,
-          evalution: "很好吃",
-          discount: "满30减10"
-        },
-        {
-          id: 2,
-          name: "示例2",
-          img: "http://lorempixel.com/100/100/food/2",
-          sales: 200,
-          distance: "4km",
-          minPrice: 20,
-          deliverFee: 0,
-          rate: 2.5,
-          evalution: "很好吃",
-          discount: "满30减10"
-        },
-        {
-          id: 3,
-          name: "示例3",
-          img: "http://lorempixel.com/100/100/food/3",
-          sales: 500,
-          distance: "1km",
-          minPrice: 40,
-          deliverFee: 6,
-          rate: 4.3,
-          evalution: "很好吃",
-          discount: "满30减10"
-        },
-        {
-          id: 4,
-          name: "示例4",
-          img: "http://lorempixel.com/100/100/food/4",
-          sales: 500,
-          distance: "1km",
-          minPrice: 40,
-          deliverFee: 6,
-          rate: 4.3,
-          evalution: "很好吃",
-          discount: "满30减10"
-        },
-        {
-          id: 5,
-          name: "示例5",
-          img: "http://lorempixel.com/100/100/food/5",
-          sales: 500,
-          distance: "1km",
-          minPrice: 40,
-          deliverFee: 6,
-          rate: 4.3,
-          evalution: "很好吃",
-          discount: "满30减10"
-        }
-      ],
       swiperOptions: {
         pagination: {
           el: ".swiper-pagination"
         },
         loop: true
-      }
+      },
+      sortedShopList: []
     };
+  },
+  computed: {
+    shopList() {
+      return this.$store.state.shopList;
+    }
   },
   components: {
     shopSearch,
@@ -187,6 +137,18 @@ export default {
       speed: 200,
       loop: true
     });
+    // 无限滚动 但是添加了60数量的限制
+    var intersectionObserver = new IntersectionObserver(entries => {
+      if (entries[0].intersectionRatio <= 0) return;
+      if (this.shopList.length > 60) return;
+      this.$axios({
+        method: "get",
+        url: "/api/shop"
+      }).then(res => {
+        this.$store.commit("updateShopList", res.data);
+      });
+    });
+    intersectionObserver.observe(document.querySelector("#sentinel"));
   }
   // directives: {
   //   swiper: directive

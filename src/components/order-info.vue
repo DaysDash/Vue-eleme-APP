@@ -2,7 +2,7 @@
   <div class="order-info">
     <div class="order-shop">
       <div class="img">
-        <img src="order.shop.avatar" />
+        <img :src="order.shop.avatar" />
       </div>
       <div class="order-shop-info">
         <div>{{ order.shop.name }}</div>
@@ -10,10 +10,14 @@
     </div>
     <div class="order-food" v-for="(food, index) in order.foods" :key="index">
       <div class="food-img">
-        <img src="food.img" />
+        <img :src="food.icon" />
       </div>
       <div class="food-info">
         {{ food.name }}
+      </div>
+      <div class="food-price">
+        <p>&yen;{{ order.totalPrice }}</p>
+        <p>共{{ num }}件</p>
       </div>
     </div>
   </div>
@@ -49,6 +53,11 @@
         margin-right 5px
     .food-info
       line-height 4rem
+    .food-price
+      margin-left auto
+      margin-right 0
+      font-size 1rem
+      padding-top 1rem
 </style>
 
 <script>
@@ -56,6 +65,11 @@ export default {
   props: {
     order: {
       type: Object
+    }
+  },
+  computed: {
+    num() {
+      return this.order.foods.length;
     }
   }
 };

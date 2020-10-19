@@ -31,15 +31,13 @@
 export default {
   props: {
     shop: {
-      type: Object
+      default: {}
     }
   },
   computed: {
     // 不知道距离和时间的具体算法,随便写了一个
     averageTime() {
-      return parseInt(this.shop.distance) / 0.2 > 20
-        ? parseInt(this.shop.distance) / 0.2
-        : 20;
+      return this.shop.distance / 100 > 20 ? this.shop.distance / 100 : 20;
     }
   }
 };

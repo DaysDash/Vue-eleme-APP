@@ -1,12 +1,13 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
-import Home from "../views/Home.vue";
-import Msite from "../views/Msite.vue";
-import Mine from "../views/Mine.vue";
-import Search from "../views/Search.vue";
-import Shop from "../views/Shop.vue";
-import Goods from "../views/Goods.vue";
-import Comment from "../views/Comment.vue";
+import Msite from "../views/Msite/Msite.vue";
+import Home from "../views/Msite/children/Home.vue";
+const Order = () => import("../views/Msite/children/Order/Order.vue");
+const Mine = () => import("../views/Msite/children/Mine.vue");
+const Search = () => import("../views/Search.vue");
+const Shop = () => import("../views/Shop/Shop.vue");
+const Goods = () => import("../views/Shop/children/Goods.vue");
+const Comment = () => import("../views/Shop/children/Comment.vue");
 
 Vue.use(VueRouter);
 
@@ -31,8 +32,7 @@ const routes = [
         // route level code-splitting
         // this generates a separate chunk (about.[hash].js) for this route
         // which is lazy-loaded when the route is visited.
-        component: () =>
-          import(/* webpackChunkName: "about" */ "../views/Order.vue")
+        component: Order
       },
       {
         path: "mine",

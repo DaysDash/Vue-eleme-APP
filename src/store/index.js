@@ -6,7 +6,10 @@ Vue.use(Vuex);
 export default new Vuex.Store({
   state: {
     searchValue: "",
+    // 购物车列表
     cartList: {},
+    // 商家列表
+    shopList: [],
     obj: {}
   },
   mutations: {
@@ -55,6 +58,10 @@ export default new Vuex.Store({
     // 清空购物车
     clearCart(state, id) {
       delete state.cartList[id];
+    },
+    // 更新商家列表
+    updateShopList(state, data) {
+      state.shopList = state.shopList.concat(data);
     }
   },
   actions: {},

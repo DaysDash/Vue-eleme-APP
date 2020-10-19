@@ -3,7 +3,9 @@ import App from "./App.vue";
 import router from "./router";
 import store from "./store";
 import "@/assets/icon/iconfont.css";
-
+import axios from "axios";
+require("./mock/mock.js");
+Vue.prototype.$axios = axios;
 Vue.config.productionTip = false;
 
 new Vue({
