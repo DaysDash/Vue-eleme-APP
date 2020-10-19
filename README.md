@@ -1,8 +1,10 @@
 # shop
-<<<<<<< HEAD
-=======
 这是一个简单通过Vue实现的外卖项目
->>>>>>> 1b237813be22d750b94984d043166740846a4fef
+项目在线预览地址: https://daysdash.github.io/Vue-Practice/dist/ (需要打开浏览器的移动端调试模式)
+未完成:
+- 商家列表排序
+- 一些其它的页面
+- 获取地址定位并计算距离
 ## Project setup
 ```
 npm install
@@ -23,5 +25,3 @@ npm run build
 npm run lint
 ```
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
