@@ -1,67 +1,134 @@
 <template>
-  <div class="shop">
-    <shopHeader class="title fixed"></shopHeader>
-    <div class="info">
-      <div class="shop-name">{{ data.info.name }}</div>
-      <div class="shop-else">
-        商家配送约{{ data.info.deliveryTime }}分钟·月售{{ data.info.sellCount }}
-      </div>
-      <div class="shop-bulletin">公告: {{ data.info.bulletin }}</div>
-      <div class="shop-discount">
-        <red-packet
-          v-for="(rp, index) in data.info.discount"
-          :key="index"
-          :rp="rp"
-        ></red-packet>
-      </div>
-      <!-- <div class="shop-preferential">
-        <span v-for="(pf, index) in data.info.supports" :key="index">
-          {{ pf.content }}
-        </span>
-      </div> -->
+  <div class="container">
+    <div class="loading" v-if="isLoading">
+      <img src="@/assets/loading.png" />
     </div>
-    <div class="nav">
-      <span @click="goto('Goods')">点餐</span>
-      <span @click="goto('Comment')">评价{{ data.info.score }}</span>
+    <div class="error" v-if="error">
+      error
     </div>
-    <router-view class="iframe"></router-view>
+    <div class="shop" v-if="data">
+      <shopHeader class="title fixed" :name="data.name"></shopHeader>
+      <div class="info">
+        <div class="shop-name">{{ data.name }}</div>
+        <div class="shop-else">
+          商家配送约{{ data.deliveryTime }}分钟·月售{{ data.sales }}
+        </div>
+        <div class="shop-bulletin">公告: {{ data.bulletin }}</div>
+        <div class="shop-discount">
+          <!-- <red-packet
+            v-for="(rp, index) in data.discount"
+            :key="index"
+            :rp="rp"
+          ></red-packet> -->
+        </div>
+      </div>
+      <div class="nav">
+        <p @click="goto('Goods')" :class="{ active: isActive }">点餐</p>
+        <p @click="goto('Comment')" :class="{ active: !isActive }">
+          评价
+        </p>
+      </div>
+      <keep-alive>
+        <router-view class="iframe"></router-view>
+      </keep-alive>
+    </div>
   </div>
 </template>
 
 <script>
 // import Cart from "@/components/cart.vue";
 import shopHeader from "@/components/shop-header.vue";
-import data from "@/assets/data.json";
 import redPacket from "@/components/shop-redPacket.vue";
 
 export default {
   data() {
     return {
+      loading: false,
+      error: null,
       shopID: "shopid",
-      data: data
+      showing: "Goods",
+      data: null
     };
   },
   computed: {
     localCart() {
       return this.$store.state.cartList[this.shopID];
+    },
+    isActive() {
+      return this.showing === "Goods" ? true : false;
+    },
+    route() {
+      return this.$route.path;
+    },
+    isLoading() {
+      // 当没有数据时,状态为loading
+      return this.loading && this.data === null;
     }
   },
+  created() {
+    this.fetchData();
+  },
   components: {
-    // Cart,
     shopHeader,
+    // eslint-disable-next-line vue/no-unused-components
     redPacket
+  },
+  beforeRouteUpdate(to, form, next) {
+    this.fetchData();
+    next();
+  },
+  watch: {
+    route() {
+      this.fetchData;
+    }
   },
   methods: {
     goto(val) {
+      this.showing = val;
       if (this.$route.path.indexOf(val) === -1) {
         this.$router.push(val);
       }
+    },
+    fetchData() {
+      this.loading = true;
+      this.$axios({
+        url: "/api/shopInfo",
+        method: "post",
+        data: {
+          id: this.$route.params.id
+        }
+      })
+        .then(res => {
+          this.data = res.data;
+          this.loading = false;
+        })
+        .catch(() => {
+          this.loading = false;
+          this.error = true;
+        });
     }
   }
 };
 </script>
 
 <style lang="stylus" scoped>
+.loading
+  height 100vh
+  width 100%
+  img
+    display block
+    margin 40vh auto
+    height 3rem
+    width 3rem
+    animation rotated 1.5s ease-out infinite
+@keyframes rotated {
+  0% {
+    transform rotate(0)
+  }
+  100% {
+    transform rotate(360deg)
+  }
+}
 .fixed
   position fixed
   background-color deepskyblue
@@ -92,12 +159,19 @@ export default {
   .shop-discount
     margin-bottom .5rem
 .nav
-
+  display flex
+  flex-direction row
   height 1.5rem
   background-color rgb(240,240,240)
   padding .5rem
-  span
-    margin-right 2em
-    font-size 1.2em
+  line-height 1.5rem
+  p
+    line-height 1.6rem
+    margin-right 1rem
+    font-size 1.2rem
     font-weight bold
+    span
+      font-size .5rem
+.active
+  border-bottom 2px solid deepskyblue
 </style>

@@ -394,15 +394,15 @@ export default {
     .blank
       height 8em
   .messageAlert
-        position absolute
-        width 1rem
-        height 1rem
-        line-height 1.1rem
-        text-align center
-        font-size .5rem
-        background-color red
-        color white
-        border-radius 50%
+    position absolute
+    width 1rem
+    height 1rem
+    line-height 1.1rem
+    text-align center
+    font-size .5rem
+    background-color red
+    color white
+    border-radius 50%
   .cart-detail
     position fixed
     padding .5rem

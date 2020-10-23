@@ -24,6 +24,9 @@ const routes = [
       {
         path: "home",
         name: "Home",
+        meta: {
+          keepAlive: true
+        },
         component: Home
       },
       {

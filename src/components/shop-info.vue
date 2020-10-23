@@ -2,6 +2,7 @@
   <div id="container" @click="$router.push(`/shop/${shop.id}`)">
     <div class="img">
       <img :src="shop.img" />
+      <div class="messageAlert" v-if="cartNumber">{{ cartNumber }}</div>
     </div>
     <div class="info">
       <div class="shopName">{{ shop.name }}</div>
@@ -11,8 +12,7 @@
           月售{{ shop.sales }}
         </div>
         <div class="shop-distance">
-          {{ averageTime }}分钟
-          {{ shop.distance }}
+          {{ averageTime }}分钟 {{ (shop.distance / 1000).toFixed(1) }}km
         </div>
       </div>
       <div class="third-line">
@@ -37,7 +37,18 @@ export default {
   computed: {
     // 不知道距离和时间的具体算法,随便写了一个
     averageTime() {
-      return this.shop.distance / 100 > 20 ? this.shop.distance / 100 : 20;
+      let result =
+        this.shop.distance / 100 > 20 ? this.shop.distance / 100 : 20;
+      return result.toFixed(0);
+    },
+    // 购物车
+    cartNumber() {
+      let obj = this.$store.state.cartList[this.shop.id] || {};
+      let result = 0;
+      Object.values(obj).forEach(item => {
+        result += Object.values(item).reduce((a, b) => a + b);
+      });
+      return result;
     }
   }
 };
@@ -50,12 +61,25 @@ export default {
   border-radius 10px
   padding 1em
   .img
+    position relative
     width 6rem
     margin-right 10px
     img
       width 6rem
       height auto
       border-radius 5px
+    .messageAlert
+      position absolute
+      width 1rem
+      height 1rem
+      top 0
+      right 0
+      line-height 1.1rem
+      text-align center
+      font-size .5rem
+      background-color red
+      color white
+      border-radius 50%
   .info
     flex 1 1 auto
     div

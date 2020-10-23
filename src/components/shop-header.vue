@@ -12,7 +12,7 @@
       </div>
     </span>
     <span v-else>
-      {{ name }}
+      <i class="icon iconfont icon-sousuo" @click="$router.push('/search')"></i>
     </span>
   </div>
 </template>
@@ -33,10 +33,17 @@
       input
         height  1.5em
         width 80vw
+    i
+      font-size 1.5rem
 </style>
 
 <script>
 export default {
+  props: {
+    name: {
+      type: String
+    }
+  },
   data() {
     return {
       value: ""
@@ -45,10 +52,6 @@ export default {
   computed: {
     isSearch() {
       return this.$route.path === "/search";
-    },
-    name() {
-      let name = this.$route.path;
-      return name;
     },
     serachValue: {
       get() {

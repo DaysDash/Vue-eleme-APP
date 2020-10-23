@@ -10,26 +10,16 @@
     <div class="shop-search">
       <shop-search></shop-search>
     </div>
-
-    <!-- 其它分类 -->
-    <!-- vue-awesome-swiper swiper6.x的pagination无法显示 -->
-    <!-- <div class="swiper-container">
-      <swiper class="swiper" :options="swiperOptions">
-        <swiper-slide>1</swiper-slide>
-        <swiper-slide>2</swiper-slide>
-        <div class="swiper-pagination" slot="pagination"></div>
-      </swiper>
-    </div> -->
     <div class="swiper-container">
       <div class="swiper-wrapper">
         <div class="swiper-slide otherPage">
           <div v-for="n in 8" :key="n">
-            <img src="@/assets/loading.png" />
+            <img src="@/assets/foo.png" />
           </div>
         </div>
         <div class="swiper-slide">
           <div v-for="n in 8" :key="n">
-            <img src="@/assets/loading.png" />
+            <img src="@/assets/foo.png" />
           </div>
         </div>
       </div>
@@ -38,17 +28,43 @@
     <!-- 商铺列表 -->
     <div class="shopList">
       <div class="sort">
-        <div>综合排序</div>
-        <div style="margin-left: 5px">距离排序</div>
+        <div
+          @click="sortList('default')"
+          :class="{ active: sortType === 'default' }"
+        >
+          默认排序
+        </div>
+        <div
+          style="margin-left: 5px"
+          @click="sortList('distance')"
+          :class="{ active: sortType === 'distance' }"
+        >
+          距离排序
+        </div>
+        <div
+          style="margin-left: 5px"
+          @click="sortList('sales')"
+          :class="{ active: sortType === 'sales' }"
+        >
+          销量排序
+        </div>
       </div>
-      <template v-if="shopList">
+      <template v-if="sortedShopList">
         <shopInfo
-          v-for="item in shopList"
+          v-for="item in sortedShopList"
           :shop="item"
           :key="item.id"
         ></shopInfo>
       </template>
       <div id="sentinel"></div>
+      <transition name="slide">
+        <div v-if="showBtn" class="fixedBtn">
+          <div class="goTop"><i class="iconfont icon-gouwuche"></i></div>
+          <div class="goTop" @click="goTop()">
+            <i class="icon iconfont icon-shangfan"></i>
+          </div>
+        </div>
+      </transition>
     </div>
   </div>
 </template>
@@ -57,6 +73,8 @@
 .container
   background-color white
   margin 0
+  height calc(100vh - 2.5rem)
+  overflow scroll
 header
   display flex
   flex-direction row
@@ -88,22 +106,40 @@ header
   .sort
     padding .5em
     display flex
-    position sticky
-    top 3em
     background-color #fff
-  #sentinel
-    height 2.5rem
+  .active
+    color deepskyblue
+.fixedBtn
+  position fixed
+  bottom 2.5rem
+  right .5rem
+  z-index 999
+  .goTop
+    height 3rem
+    width 3rem
+    text-align center
+    border-radius 50%
+    background-color #fff
+    box-shadow 1px 1px 10px rgba(0, 0, 0, .2)
+    margin-bottom 5px
+    i
+      font-size 2rem
+      line-height 3rem
+#sentinel
+  min-height .1rem
+.slide-enter-active, .slide-leave-active
+  transition all .5s
+.slide-enter, .slide-leave-to
+  transform translateX(5rem)
 </style>
 
 <script>
 // @ is an alias to /src
 import shopSearch from "@/components/shop-search.vue";
 import shopInfo from "@/components/shop-info.vue";
-// import { Swiper, SwiperSlide, directive } from "vue-awesome-swiper";
 import "swiper/swiper-bundle.css";
 import Swiper, { Navigation, Pagination } from "swiper";
 Swiper.use([Navigation, Pagination]);
-// import Swiper from "swiper";
 
 export default {
   name: "Home",
@@ -115,21 +151,38 @@ export default {
         },
         loop: true
       },
-      sortedShopList: []
+      sortedShopList: [],
+      interval: "",
+      sortType: "default",
+      showBtn: false
     };
-  },
-  computed: {
-    shopList() {
-      return this.$store.state.shopList;
-    }
   },
   components: {
     shopSearch,
     shopInfo
-    // Swiper,
-    // SwiperSlide
+  },
+  methods: {
+    sortList(val = "default") {
+      this.sortType = val;
+      switch (val) {
+        case "distance":
+          this.sortedShopList = this.$store.getters.distance;
+          break;
+        case "sales":
+          this.sortedShopList = this.$store.getters.sales;
+          break;
+        default:
+          this.sortedShopList = this.$store.state.shopList;
+          break;
+      }
+    },
+    goTop() {
+      document.querySelector(".container").scrollTo(0, 0);
+      this.showBtn = false;
+    }
   },
   mounted() {
+    this.sortList();
     new Swiper(".swiper-container", {
       pagination: {
         el: ".swiper-pagination"
@@ -138,20 +191,53 @@ export default {
       loop: true
     });
     // 无限滚动 但是添加了60数量的限制
+    let sentinel = document.querySelector("#sentinel");
     var intersectionObserver = new IntersectionObserver(entries => {
       if (entries[0].intersectionRatio <= 0) return;
-      if (this.shopList.length > 60) return;
+      if (this.$store.state.shopList.length > 50) {
+        return;
+      }
+      let a = this.$store.state.shopList.length;
+      let load = document.createElement("p");
+      load.innerHTML = "加载中";
+      sentinel.appendChild(load);
       this.$axios({
         method: "get",
-        url: "/api/shop"
+        url: "/api/shoplist",
+        data: {
+          a: a
+        }
       }).then(res => {
+        sentinel.removeChild(load);
         this.$store.commit("updateShopList", res.data);
+        this.sortedShopList = this.$store.state.shopList;
       });
     });
-    intersectionObserver.observe(document.querySelector("#sentinel"));
+    intersectionObserver.observe(sentinel);
+    //页面位置监听
+    this.interval = setInterval(() => {
+      if (this.$route.path != "/msite/home") return;
+      let height = document.querySelector(".container").scrollTop;
+      if (height > 1000) {
+        this.showBtn = true;
+      } else {
+        this.showBtn = false;
+      }
+    }, 1000);
+  },
+  // 滚动到离开页面时的位置
+  beforeRouteEnter(to, from, next) {
+    next(vm => {
+      vm.sortList(to.meta.sortType);
+      document.querySelector(".container").scrollTo(0, to.meta.height);
+    });
+  },
+  // 记录离开时的位置和分类信息
+  beforeRouteLeave(to, from, next) {
+    from.meta.sortType = this.sortType;
+    from.meta.height = document.querySelector(".container").scrollTop;
+    this.showBtn = false;
+    next();
   }
-  // directives: {
-  //   swiper: directive
-  // }
 };
 </script>

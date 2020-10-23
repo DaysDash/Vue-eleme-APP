@@ -9,8 +9,21 @@ export default new Vuex.Store({
     // 购物车列表
     cartList: {},
     // 商家列表
-    shopList: [],
-    obj: {}
+    shopList: []
+  },
+  getters: {
+    distance(state) {
+      const arr = [].concat(state.shopList);
+      return arr.sort((a, b) => {
+        return a.distance - b.distance;
+      });
+    },
+    sales(state) {
+      const arr = [].concat(state.shopList);
+      return arr.sort((a, b) => {
+        return b.sales - a.sales;
+      });
+    }
   },
   mutations: {
     // 处理表单数据的双向绑定
