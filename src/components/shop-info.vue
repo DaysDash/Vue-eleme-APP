@@ -16,7 +16,7 @@
         </div>
       </div>
       <div class="third-line">
-        起送&yen;{{ shop.minPrice }} 配送&yen;{{ shop.deliverFee }}
+        起送&yen;{{ shop.minPrice }} 配送&yen;{{ shop.deliveryFee }}
       </div>
       <div class="fouth-line">
         <span>{{ shop.evalution }}</span>

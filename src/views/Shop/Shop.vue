@@ -11,7 +11,7 @@
       <div class="info">
         <div class="shop-name">{{ data.name }}</div>
         <div class="shop-else">
-          商家配送约{{ data.deliveryTime }}分钟·月售{{ data.sales }}
+          商家配送约{{ averageTime }}分钟·月售{{ data.sales }}
         </div>
         <div class="shop-bulletin">公告: {{ data.bulletin }}</div>
         <div class="shop-discount">
@@ -51,6 +51,12 @@ export default {
     };
   },
   computed: {
+    // 不知道距离和时间的具体算法,随便写了一个
+    averageTime() {
+      let result =
+        this.data.distance / 100 > 20 ? this.data.distance / 100 : 20;
+      return result.toFixed(0);
+    },
     localCart() {
       return this.$store.state.cartList[this.shopID];
     },

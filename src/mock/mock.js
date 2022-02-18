@@ -20,7 +20,6 @@ for (let i = 0; i < 60; i++) {
     sales: Random.integer(0, 10000),
     rate: Random.float(1, 4, 0, 1),
     deliveryFee: Random.integer(0, 20),
-    deliveryTime: Random.integer(20, 50),
     distance: Random.integer(1000, 5000),
     evalution: Random.csentence(5, 8),
     discount: `满${Random.integer(10, 30)}减${Random.integer(3, 9)}`,

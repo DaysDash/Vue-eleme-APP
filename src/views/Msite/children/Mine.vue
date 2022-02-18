@@ -22,7 +22,7 @@
           <div class="icon"><i class="iconfont icon-jushoucang"> </i></div>
           <div>店铺关注</div>
         </div>
-        <div>
+        <div @click="$router.push('/cart')">
           <div class="icon"><i class="iconfont icon-gouwuche"> </i></div>
           <div>购物车</div>
         </div>

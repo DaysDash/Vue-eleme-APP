@@ -138,7 +138,7 @@
       <div>
         <div v-if="totalFood === 0">未选购商品</div>
         <div v-else class="totalPrice">&yen;{{ totalPrice }}</div>
-        <div class="deliverPrice">另需配送费&yen;{{ shop.deliveryPrice }}</div>
+        <div class="deliverPrice">另需配送费&yen;{{ shop.deliveryFee }}</div>
       </div>
       <div class="confirm" :class="isEnough">
         {{ minPrice }}

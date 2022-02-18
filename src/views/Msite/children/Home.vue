@@ -59,7 +59,9 @@
       <div id="sentinel"></div>
       <transition name="slide">
         <div v-if="showBtn" class="fixedBtn">
-          <div class="goTop"><i class="iconfont icon-gouwuche"></i></div>
+          <div class="goTop" @click="$router.push('/cart')">
+            <i class="iconfont icon-gouwuche"></i>
+          </div>
           <div class="goTop" @click="goTop()">
             <i class="icon iconfont icon-shangfan"></i>
           </div>

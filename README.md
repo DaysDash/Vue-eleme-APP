@@ -3,10 +3,8 @@
 因为没有后端,所有数据都是用mock模拟,所以会出现数据重复
 项目在线预览地址: https://daysdash.github.io/Vue-Practice/dist/   
 (如果打开浏览器的移动端调试模式,需要刷新)  
-## Project setup
-```
-npm install
-```
+
+
 
 ### Compiles and hot-reloads for development
 ```

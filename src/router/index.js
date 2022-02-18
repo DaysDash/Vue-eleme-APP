@@ -8,6 +8,7 @@ const Search = () => import("../views/Search.vue");
 const Shop = () => import("../views/Shop/Shop.vue");
 const Goods = () => import("../views/Shop/children/Goods.vue");
 const Comment = () => import("../views/Shop/children/Comment.vue");
+const Cart = () => import("../views/Cart.vue");
 
 Vue.use(VueRouter);
 
@@ -66,6 +67,11 @@ const routes = [
         component: Comment
       }
     ]
+  },
+  {
+    path: "/cart",
+    name: "Cart",
+    component: Cart
   }
 ];
 
